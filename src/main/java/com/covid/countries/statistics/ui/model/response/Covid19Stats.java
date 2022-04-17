@@ -1,76 +1,107 @@
 package com.covid.countries.statistics.ui.model.response;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="CovidStatistics")
 public class Covid19Stats {
-	private String city;
-	private String province;
-	private String country;
-	private String lastUpdate;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column
+	private String Id;
+	@Column
 	private String keyId;
-	private float confirmed;
-	private float deaths;
-	private String recovered;
+	@Column
+	private String country;
+	@Column
+	private String province;
+	@Column
+	private String city;
+	@Column
+	private int confirmed;
+	@Column
+	private int deaths;
+	@Column
+	private int recovered;
+	@Column
+	private String lastUpdate;
 
-	public String getCity() {
-		return city;
+	public String getId() {
+		return Id;
 	}
 
-	public String getProvince() {
-		return province;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public String getLastUpdate() {
-		return lastUpdate;
+	public void setId(String id) {
+		Id = id;
 	}
 
 	public String getKeyId() {
 		return keyId;
 	}
 
-	public float getConfirmed() {
-		return confirmed;
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
 	}
 
-	public float getDeaths() {
-		return deaths;
-	}
-
-	public String getRecovered() {
-		return recovered;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
+	public String getCountry() {
+		return country;
 	}
 
 	public void setCountry(String country) {
 		this.country = country;
 	}
 
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public int getConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(int confirmed) {
+		this.confirmed = confirmed;
+	}
+
+	public int getDeaths() {
+		return deaths;
+	}
+
+	public void setDeaths(int deaths) {
+		this.deaths = deaths;
+	}
+
+	public int getRecovered() {
+		return recovered;
+	}
+
+	public void setRecovered(int recovered) {
+		this.recovered = recovered;
+	}
+
+	public String getLastUpdate() {
+		return lastUpdate;
+	}
+
 	public void setLastUpdate(String lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 
-	public void setKeyId(String keyId) {
-		this.keyId = keyId;
-	}
-
-	public void setConfirmed(float confirmed) {
-		this.confirmed = confirmed;
-	}
-
-	public void setDeaths(float deaths) {
-		this.deaths = deaths;
-	}
-
-	public void setRecovered(String recovered) {
-		this.recovered = recovered;
-	}
 }

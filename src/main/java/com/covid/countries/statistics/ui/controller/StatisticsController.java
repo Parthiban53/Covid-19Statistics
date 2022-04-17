@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.covid.countries.statistics.service.StatisticsService;
 import com.covid.countries.statistics.ui.model.response.Covid19Stats;
 import com.covid.countries.statistics.ui.model.response.StatisticsResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,13 +28,17 @@ import okhttp3.Response;
 public class StatisticsController {
 	private static final String BASE_URL = "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats";
 
+	@Autowired
+	StatisticsService statsService;
+
 	@GetMapping(value = "/getstatistics", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Covid19Stats>> getStatistics() throws Exception {
 		List<Covid19Stats> covid19Stats = getAPIData(BASE_URL);
-		if(null != covid19Stats) {
+		if (null != covid19Stats) {
+			statsService.saveStatistics(covid19Stats);
 			return new ResponseEntity<List<Covid19Stats>>(covid19Stats, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);	
+		} else {
+			return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);
 		}
 	}
 
@@ -44,9 +50,19 @@ public class StatisticsController {
 		List<Covid19Stats> filteredCovid19Stats = covid19Stats != null
 				? covid19Stats.stream().limit(records).collect(Collectors.toList())
 				: null;
-		if(null != covid19Stats) {
+		if (null != covid19Stats) {
 			return new ResponseEntity<List<Covid19Stats>>(filteredCovid19Stats, HttpStatus.OK);
-		}else {
+		} else {
+			return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@GetMapping(value = "/getstatisticsFromH2DB", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Covid19Stats>> getStatisticsFromH2DB() throws Exception {
+		List<Covid19Stats> covid19Stats = statsService.getStatistics();
+		if (null != covid19Stats) {
+			return new ResponseEntity<List<Covid19Stats>>(covid19Stats, HttpStatus.OK);
+		} else {
 			return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);
 		}
 	}

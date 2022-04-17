@@ -5,3 +5,5 @@ E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid
 E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid\countries\statistics\ui\model\response\Data.java
 E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid\countries\statistics\ui\controller\ExceptionAdvicer.java
 E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid\countries\statistics\ui\model\response\Covid19Stats.java
+E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid\countries\statistics\repository\StatisticsRepository.java
+E:\springboot_workspace1\covid-19-coronavirus-statistics\src\main\java\com\covid\countries\statistics\service\StatisticsService.java
