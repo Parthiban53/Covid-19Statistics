@@ -2,7 +2,9 @@ package com.covid.countries.statistics.ui.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,14 +28,13 @@ import okhttp3.Response;
 
 @RestController
 public class StatisticsController {
-	private static final String BASE_URL = "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats";
 
 	@Autowired
 	StatisticsService statsService;
 
-	@GetMapping(value = "/getstatistics", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Covid19Stats>> getStatistics() throws Exception {
-		List<Covid19Stats> covid19Stats = getAPIData(BASE_URL);
+	@GetMapping(value = "/getCovidStatisticsReportForAllCountries", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Covid19Stats>> getCovidStatisticsReportForAllCountries() throws Exception {
+		List<Covid19Stats> covid19Stats = getAPIData(Util.BASE_URL);
 		if (null != covid19Stats) {
 			statsService.saveStatistics(covid19Stats);
 			return new ResponseEntity<List<Covid19Stats>>(covid19Stats, HttpStatus.OK);
@@ -42,23 +43,32 @@ public class StatisticsController {
 		}
 	}
 
-	@GetMapping(value = "/getstatistics/{country}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Covid19Stats>> getStatistics(@PathVariable("country") String country,
-			@RequestParam(value = "records", required = true) int records) throws Exception {
-		String url = BASE_URL + "?country=" + country;
+	@GetMapping(value = "/getCovidStatisticsReportForSpecificCountry/{country}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Covid19Stats>> getCovidStatisticsReportForSpecificCountry(@PathVariable("country") String country,
+			@RequestParam(value = "pageNumber", required = true) int pageNumber,
+			@RequestParam(value = "pageSize", required = true) int pageSize) throws Exception {
+		String url = Util.BASE_URL + "?country=" + country;
 		List<Covid19Stats> covid19Stats = getAPIData(url);
-		List<Covid19Stats> filteredCovid19Stats = covid19Stats != null
-				? covid19Stats.stream().limit(records).collect(Collectors.toList())
-				: null;
 		if (null != covid19Stats) {
-			return new ResponseEntity<List<Covid19Stats>>(filteredCovid19Stats, HttpStatus.OK);
+			Map<Integer, List<Covid19Stats>> covid19StatsMap = IntStream
+					.range(0, (covid19Stats.size() + pageSize - 1) / pageSize).boxed()
+					.collect(Collectors.toMap(i -> i, i -> covid19Stats.subList(i * pageSize,
+							Math.min((i + 1) * pageSize, covid19Stats.size()))));
+			List<Covid19Stats> filteredCovid19Stats = (null != covid19StatsMap)
+					? null != covid19StatsMap.get(pageNumber-1) ? covid19StatsMap.get(pageNumber-1) : null
+					: null;
+			if (null != filteredCovid19Stats) {
+				return new ResponseEntity<List<Covid19Stats>>(filteredCovid19Stats, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);
+			}
 		} else {
 			return new ResponseEntity<List<Covid19Stats>>(HttpStatus.NO_CONTENT);
 		}
 	}
 
-	@GetMapping(value = "/getstatisticsFromH2DB", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Covid19Stats>> getStatisticsFromH2DB() throws Exception {
+	@GetMapping(value = "/getCovidStatisticsReportForAllCountriesFromH2DB", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<Covid19Stats>> getCovidStatisticsReportForAllCountriesFromH2DB() throws Exception {
 		List<Covid19Stats> covid19Stats = statsService.getStatistics();
 		if (null != covid19Stats) {
 			return new ResponseEntity<List<Covid19Stats>>(covid19Stats, HttpStatus.OK);
