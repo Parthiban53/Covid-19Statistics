@@ -1,9 +1,10 @@
 com\covid\countries\statistics\service\StatisticsService.class
 com\covid\countries\statistics\repository\StatisticsRepository.class
 com\covid\countries\statistics\ui\model\response\StatisticsResponse.class
-com\covid\countries\statistics\SpringFoxConfig.class
 com\covid\countries\statistics\ui\controller\ExceptionAdvicer.class
 com\covid\countries\statistics\Covid19CoronavirusStatisticsApplication.class
+com\covid\countries\statistics\SpringFoxConfig.class
 com\covid\countries\statistics\ui\controller\StatisticsController.class
 com\covid\countries\statistics\ui\model\response\Data.class
 com\covid\countries\statistics\ui\model\response\Covid19Stats.class
+com\covid\countries\statistics\ui\controller\Util.class
